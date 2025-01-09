@@ -100,7 +100,7 @@ Look through the assignment and complete all of the TODOs for that assignment.
 6. **Stage Changes**
 It should be safe to stage all changes (unless you made changes to files outside of the scope of the assignment)
   ```bash
-     git stage *
+     git add *
   ```
 
 7. **Commit Changes**
