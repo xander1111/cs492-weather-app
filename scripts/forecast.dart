@@ -22,7 +22,7 @@ void getForecastHourlyFromPoints(double lat, double lon) async{
   Map<String, dynamic> pointsJson = await getRequestJson(pointsUrl);
 
   // pull the forecastHourly URL from the response json
-  String forecastHourlyUrl = pointsJson["properties"]["forecast"];
+  String forecastHourlyUrl = pointsJson["properties"]["forecastHourly"];
 
   // make a request to the forecastHourlyJson url and decode the json data
   Map<String, dynamic> forecastHourlyJson = await getRequestJson(forecastHourlyUrl);
