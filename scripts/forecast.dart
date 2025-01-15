@@ -48,6 +48,7 @@ void processForecast(Map<String, dynamic> forecast){
   String detailedForecast = forecast["detailedForecast"];
   int? preciptationProb = forecast["probabilityOfPrecipitation"]["value"] ?? null;
   int? humidity = forecast["relativeHumidity"] != null ? forecast["relativeHumidity"]["value"] : null;
+  num? dewpoint = forecast["dewpoint"]?["value"];
 
   return;
 }
