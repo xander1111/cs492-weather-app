@@ -52,7 +52,7 @@ class Forecast{
   }
 }
 
-void getForecastFromPoints(double lat, double lon) async{
+Future<List<Forecast>> getForecastFromPoints(double lat, double lon) async{
   // TODO: Update this function to return a list of forecasts
   // make a request to the weather api using the latitude and longitude and decode the json data
   String pointsUrl = "https://api.weather.gov/points/${lat},${lon}";
@@ -63,12 +63,10 @@ void getForecastFromPoints(double lat, double lon) async{
 
   // make a request to the forecastJson url and decode the json data
   Map<String, dynamic> forecastJson = await getRequestJson(forecastUrl);
-  processForecasts(forecastJson["properties"]["periods"]);
-
-  return null;
+  return processForecasts(forecastJson["properties"]["periods"]);
 }
 
-void getForecastHourlyFromPoints(double lat, double lon) async{
+Future<List<Forecast>> getForecastHourlyFromPoints(double lat, double lon) async{
   // TODO: Update this function to return a list of forecasts
   // make a request to the weather api using the latitude and longitude and decode the json data
   String pointsUrl = "https://api.weather.gov/points/${lat},${lon}";
@@ -79,16 +77,16 @@ void getForecastHourlyFromPoints(double lat, double lon) async{
 
   // make a request to the forecastHourlyJson url and decode the json data
   Map<String, dynamic> forecastHourlyJson = await getRequestJson(forecastHourlyUrl);
-  processForecasts(forecastHourlyJson["properties"]["periods"]);
-
-  return null;
+  return processForecasts(forecastHourlyJson["properties"]["periods"]);
 }
 
-void processForecasts(List<dynamic> forecasts){
+List<Forecast> processForecasts(List<dynamic> forecasts){
   // TODO: Change this function to return a List of Forecast Objects
+  List<Forecast> forecastObjs = [];
   for (dynamic forecast in forecasts){
-    Forecast forecastObj = Forecast.fromJson(forecast);
+    forecastObjs.add(Forecast.fromJson(forecast));
   }
+  return forecastObjs;
 }
 
 void processForecast(Map<String, dynamic> forecast){
