@@ -30,7 +30,7 @@ class Forecast{
 
   factory Forecast.fromJson(Map<String, dynamic> json){
     return Forecast(
-      name: json["name"].length > 0? json["name"] : null,
+      name: json["name"].isNotEmpty ? json["name"] : null,
       isDaytime: json["isDaytime"],
       temperature: json["temperature"],
       temperatureUnit: json["temperatureUnit"],
@@ -44,11 +44,18 @@ class Forecast{
     );
   }
 
-  // TODO: Finish the toString() function, printing every value
   @override
-  String toString(){
-    return "name: ${name}\n" // TODO: if this is null, print "None"
-      "isDaytime: ${isDaytime ? "Yes" : "No"}\n";
+  String toString() {
+    return "name: $name\n"
+      "isDaytime: ${isDaytime ? "Yes" : "No"}\n"
+      "temperature: $temperature\u00B0 $temperatureUnit\n"
+      "windSpeed: $windSpeed\n"
+      "windDirection: $windDirection\n"
+      "shortForecast: $shortForecast\n"
+      "detailedForecast: ${detailedForecast.isNotEmpty ? detailedForecast : "Not available for hourly forecasts"}\n"
+      "preciptationProb: ${precipitationProbability ?? "Not available for daily forecasts"}\n"
+      "humidity: ${humidity ?? "Not available for daily forecasts"}\n"
+      "dewpoint: ${dewpoint ?? "Not available for daily forecasts"}\n";
   }
 }
 
