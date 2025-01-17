@@ -9,7 +9,7 @@ class Forecast{
   final String windSpeed;
   final String windDirection;
   final String shortForecast;
-  final String detailedForecast;
+  final String? detailedForecast;
   final int? precipitationProbability;
   final int? humidity;
   final num? dewpoint;
@@ -30,14 +30,14 @@ class Forecast{
 
   factory Forecast.fromJson(Map<String, dynamic> json){
     return Forecast(
-      name: json["name"].length > 0? json["name"] : null,
+      name: json["name"].isEmpty ? json["name"] : null,
       isDaytime: json["isDaytime"],
       temperature: json["temperature"],
       temperatureUnit: json["temperatureUnit"],
       windSpeed: json["windSpeed"],
       windDirection: json["windDirection"],
       shortForecast: json["shortForecast"],
-      detailedForecast: json["detailedForecast"],
+      detailedForecast: json["detailedForecast"].isEmpty ? json["detailedForecast"]: null ,
       precipitationProbability: json["probabilityOfPrecipitation"]["value"],
       humidity: json["relativeHumidity"] != null ? json["relativeHumidity"]["value"] : null,
       dewpoint: json["dewpoint"]?["value"],
@@ -47,8 +47,17 @@ class Forecast{
   // TODO: Finish the toString() function, printing every value
   @override
   String toString(){
-    return "name: ${name}\n" // TODO: if this is null, print "None"
-      "isDaytime: ${isDaytime ? "Yes" : "No"}\n";
+    return "name: ${name ?? "None"}\n" // TODO: if this is null, print "None"
+          "isDaytime: ${isDaytime ? "Yes" : "No"}\n"
+          "temperature: ${temperature}\n"
+          "temperatureUnit: ${temperatureUnit}\n"
+          "windSpeed: ${windSpeed}\n"
+          "windDirection: ${windDirection}\n"
+          "shortForecast: ${shortForecast}\n"
+          "detailedForecast: ${detailedForecast}\n"
+          "precipitationProbability: ${precipitationProbability ?? "None"}\n"
+          "humidity: ${humidity ?? "None"}\n"
+          "dewpoint: ${dewpoint ?? "None"}\n";
   }
 }
 
