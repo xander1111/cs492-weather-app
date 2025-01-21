@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:weatherapp/scripts/tests.dart' as tests;
+
 void main() {
   runApp(const MyApp());
 }
@@ -56,6 +58,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  @override
+  void initState() {
+    super.initState();
+
+    // run tests initially
+    tests.testForecast();
+  }
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
