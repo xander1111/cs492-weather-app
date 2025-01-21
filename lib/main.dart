@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     // run tests initially
-    tests.testForecast();
+    tests.testLocation();
   }
   @override
   Widget build(BuildContext context) {
