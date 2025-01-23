@@ -22,6 +22,10 @@ void testLocation() async {
 
 }
 
+void testGps(){
+  location.getLocationFromGps();
+}
+
 
 void testForecast() async {
 // testing with Bend, OR coordinates
