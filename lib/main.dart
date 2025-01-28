@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:weatherapp/scripts/tests.dart' as tests;
 import 'package:weatherapp/scripts/location.dart' as location;
+import 'package:weatherapp/scripts/forecast.dart' as forecast;
 
 void main() {
   runApp(const MyApp());
@@ -60,31 +60,30 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   // TODO: Add a new list of forecast.Forecast variable called _forecasts
-  location.Location? _currentLocation;
+  List<forecast.Forecast> _forecasts = [];
+  location.Location? _location;
 
   @override
   void initState() {
     super.initState();
-
-    // run tests initially
-    //tests.testLocation();
     setLocation();
 
   }
 
-  // TODO Create a new function called getForecasts(location.Location currentLocation)
-  // This function should use a location to call getForecastFromPoints(), passing in the lat, lon
-  // use setState the same way as setLocation does to set your _forecasts to the returned forecasts
+  Future<List<forecast.Forecast>> getForecasts(location.Location currentLocation) async {
+    return forecast.getForecastFromPoints(currentLocation.latitude, currentLocation.longitude);
+  }
 
   void setLocation() async {
-    if (_currentLocation == null){
-      // location.Location? currentLocation = await location.getLocationFromAddress(city, state, zip);
-      location.Location? currentLocation = await location.getLocationFromGps();
+    if (_location == null){
+      location.Location currentLocation = await location.getLocationFromGps();
 
-      // TODO: Add a call to your getForecasts function passing in the currentLocation
-      
+      List<forecast.Forecast> currentForecasts = await getForecasts(currentLocation);
+
       setState(() {
-        _currentLocation = currentLocation;
+        _location = currentLocation;
+        _forecasts = currentForecasts;
+        
       });
     }
   }
@@ -112,8 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Center(
           child: Column(
             children: [
-              locationWidget(_currentLocation),
-              // TODO: add a new call to forecastWidget that passes in _forecasts[0]
+              Text("${_location?.city ?? "city"}, ${_location?.state ?? "state"}, ${_location?.zip ?? "zip"}"),
+              Text(_forecasts.isNotEmpty ? _forecasts[0].shortForecast : "")
             ],
           ),
         ),
@@ -121,29 +120,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  
-  // TODO: add a new Row forecastWidget to display some basic forecast information
-  // you can choose the parts that you want to display for now.
-
-  Row locationWidget(location.Location? currentLocation) {
-    return Row(
-      children: [
-        Text(
-          currentLocation != null ? currentLocation.city ?? "City" : "City",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-          textAlign: TextAlign.center,
-        ),
-        Text(
-          currentLocation != null ? currentLocation.state ?? "State" : "State",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-          textAlign: TextAlign.center,
-        ),
-        Text(
-          currentLocation != null ? currentLocation.zip ?? "Zip" : "Zip",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
 }
