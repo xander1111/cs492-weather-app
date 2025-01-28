@@ -30,7 +30,7 @@ class Forecast{
 
   factory Forecast.fromJson(Map<String, dynamic> json){
     return Forecast(
-      name: json["name"].isEmpty ? json["name"] : null,
+      name: json["name"].isNotEmpty ? json["name"] : null,
       isDaytime: json["isDaytime"],
       temperature: json["temperature"],
       temperatureUnit: json["temperatureUnit"],
