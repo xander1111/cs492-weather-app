@@ -59,7 +59,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  // TODO: Add a new list of forecast.Forecast variable called _forecasts
   List<forecast.Forecast> _forecasts = [];
   location.Location? _location;
 
@@ -111,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Center(
           child: Column(
             children: [
-              Text("${_location?.city ?? "city"}, ${_location?.state ?? "state"}, ${_location?.zip ?? "zip"}"),
+              Text("${_location?.city ?? "city"}, ${_location?.state ?? "state"} ${_location?.zip ?? "zip"}"),
               Text(_forecasts.isNotEmpty ? _forecasts[0].shortForecast : "")
             ],
           ),
