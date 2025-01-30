@@ -13,6 +13,8 @@ class Forecast{
   final int? precipitationProbability;
   final int? humidity;
   final num? dewpoint;
+  final String? startTime;
+  final String? endTime;
 
   Forecast({
     required this.name,
@@ -26,6 +28,8 @@ class Forecast{
     required this.precipitationProbability,
     required this.humidity,
     required this.dewpoint,
+    required this.startTime,
+    required this.endTime
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json){
@@ -37,10 +41,12 @@ class Forecast{
       windSpeed: json["windSpeed"],
       windDirection: json["windDirection"],
       shortForecast: json["shortForecast"],
-      detailedForecast: json["detailedForecast"].isEmpty ? json["detailedForecast"]: null ,
+      detailedForecast: json["detailedForecast"].isNotEmpty ? json["detailedForecast"]: null ,
       precipitationProbability: json["probabilityOfPrecipitation"]["value"],
       humidity: json["relativeHumidity"] != null ? json["relativeHumidity"]["value"] : null,
       dewpoint: json["dewpoint"]?["value"],
+      startTime: json["startTime"].isNotEmpty ? json["startTime"] : null,
+      endTime: json["endTime"].isNotEmpty ? json["endTime"] : null,
     );
   }
 
@@ -56,7 +62,9 @@ class Forecast{
           "detailedForecast: $detailedForecast\n"
           "precipitationProbability: ${precipitationProbability ?? "None"}\n"
           "humidity: ${humidity ?? "None"}\n"
-          "dewpoint: ${dewpoint ?? "None"}\n";
+          "dewpoint: ${dewpoint ?? "None"}\n"
+          "startTime: ${startTime ?? "None\n"}"
+          "startTime: ${endTime ?? "None\n"}";
   }
 }
 

@@ -4,13 +4,27 @@ import 'package:weatherapp/scripts/forecast.dart' as forecast;
 class ForecastWidget extends StatelessWidget {
   const ForecastWidget({
     super.key,
-    required List<forecast.Forecast> forecasts,
-  }) : _forecasts = forecasts;
+    required forecast.Forecast forecast,
+  }) : _forecast = forecast;
 
-  final List<forecast.Forecast> _forecasts;
+  final forecast.Forecast _forecast;
 
   @override
   Widget build(BuildContext context) {
-    return Text(_forecasts.isNotEmpty ? _forecasts[0].shortForecast : "");
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Text(_forecast.name ?? _forecast.startTime ?? ""),
+          Text(_forecast.detailedForecast ?? _forecast.shortForecast),
+          Text("Wind: ${_forecast.windSpeed} ${_forecast.windDirection}"),
+          Text("Temp: ${_forecast.temperature}${_forecast.temperatureUnit}"),
+          Text("Dewpoint: ${_forecast.dewpoint}"),
+          Text("Humidity: ${_forecast.humidity}"),
+          Text("Chance of Rain: ${_forecast.precipitationProbability}"),
+      
+        ],
+      ),
+    );
   }
 }
