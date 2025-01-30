@@ -15,7 +15,7 @@ class ForecastSummariesWidget extends StatelessWidget {
     List<ForecastSummaryWidget> widgets = [];
 
     for (int i = 0; i < _forecasts.length; i++){
-      widgets.add(ForecastSummaryWidget(currentForecast: _forecasts[i]));
+      widgets.add(ForecastSummaryWidget(currentForecast: _forecasts[0]));
     }
     return widgets;
   }

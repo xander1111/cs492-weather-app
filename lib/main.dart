@@ -13,11 +13,13 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  final String title = 'CS492 Weather App';
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'CS492 Weather App',
+      title: title,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: title),
     );
   }
 }
@@ -74,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<forecast.Forecast>> getForecasts(location.Location currentLocation) async {
-    return forecast.getForecastFromPoints(currentLocation.latitude, currentLocation.longitude);
+    return forecast.getForecastHourlyFromPoints(currentLocation.latitude, currentLocation.longitude);
   }
 
   void setLocation() async {
@@ -82,8 +84,6 @@ class _MyHomePageState extends State<MyHomePage> {
       location.Location currentLocation = await location.getLocationFromGps();
 
       List<forecast.Forecast> currentForecasts = await getForecasts(currentLocation);
-
-      
 
       setState(() {
         _location = currentLocation;

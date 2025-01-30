@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/forecast.dart' as forecast;
+import 'package:weatherapp/scripts/time.dart' as time;
+
 
 class ForecastSummaryWidget extends StatelessWidget {
   const ForecastSummaryWidget({
@@ -11,10 +13,6 @@ class ForecastSummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: update this widget to look better
-    // Use flutter documentation to help you
-    // Try add spacing and a border around the outside
-    // Update the text as well, so the name, forecast, and temperature have different formatting
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -23,7 +21,7 @@ class ForecastSummaryWidget extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0), // Adjust the radius to control the roundness
           border: Border.all(
-            color: Colors.blue, // Border color
+            color: Colors.black, // Border color
             width: 2.0, // Border width
           ),
         ),
@@ -47,6 +45,27 @@ class ForecastSummaryWidget extends StatelessWidget {
   }
 }
 
+
+
+class ForecastNameWidget extends StatelessWidget {
+  const ForecastNameWidget({
+    super.key,
+    required forecast.Forecast forecast,
+  }) : _forecast = forecast;
+
+  final forecast.Forecast _forecast;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      _forecast.name ?? time.convertTimestampToDayAndHour(_forecast.startTime) ?? "",
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 12.0
+      ));
+  }
+}
+
 class ShortForecastWidget extends StatelessWidget {
   const ShortForecastWidget({
     super.key,
@@ -64,21 +83,3 @@ class ShortForecastWidget extends StatelessWidget {
   }
 }
 
-class ForecastNameWidget extends StatelessWidget {
-  const ForecastNameWidget({
-    super.key,
-    required forecast.Forecast forecast,
-  }) : _forecast = forecast;
-
-  final forecast.Forecast _forecast;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      _forecast.name ?? "",
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        fontSize: 12.0
-      ));
-  }
-}
