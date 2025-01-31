@@ -1,5 +1,6 @@
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:weatherapp/scripts/time.dart';
 
 class Forecast{
   final String? name;
@@ -13,8 +14,9 @@ class Forecast{
   final int? precipitationProbability;
   final int? humidity;
   final num? dewpoint;
-  final String? startTime;
-  final String? endTime;
+  final DateTime startTime;
+  final DateTime endTime;
+  final String? tempHighLow;
 
   Forecast({
     required this.name,
@@ -29,7 +31,8 @@ class Forecast{
     required this.humidity,
     required this.dewpoint,
     required this.startTime,
-    required this.endTime
+    required this.endTime,
+    required this.tempHighLow,
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json){
@@ -45,8 +48,9 @@ class Forecast{
       precipitationProbability: json["probabilityOfPrecipitation"]["value"],
       humidity: json["relativeHumidity"] != null ? json["relativeHumidity"]["value"] : null,
       dewpoint: json["dewpoint"]?["value"],
-      startTime: json["startTime"].isNotEmpty ? json["startTime"] : null,
-      endTime: json["endTime"].isNotEmpty ? json["endTime"] : null,
+      startTime: DateTime.parse(json["startTime"]).toLocal(),
+      endTime: DateTime.parse(json["endTime"]).toLocal(),
+      tempHighLow: null
     );
   }
 
@@ -63,8 +67,9 @@ class Forecast{
           "precipitationProbability: ${precipitationProbability ?? "None"}\n"
           "humidity: ${humidity ?? "None"}\n"
           "dewpoint: ${dewpoint ?? "None"}\n"
-          "startTime: ${startTime ?? "None\n"}"
-          "startTime: ${endTime ?? "None\n"}";
+          "startTime: ${startTime.toLocal()}\n"
+          "endTime: ${endTime.toLocal()}\n"
+          "tempHighLow: ${tempHighLow ?? "None"}";
   }
 }
 
@@ -105,4 +110,36 @@ List<Forecast> processForecasts(List<dynamic> forecasts){
 Future<Map<String, dynamic>> getRequestJson(String url) async{
   http.Response r = await http.get(Uri.parse(url));
   return convert.jsonDecode(r.body);
+}
+
+
+Forecast getForecastDaily(Forecast forecast1, Forecast forecast2){
+  String tempHighLow = getTempHighLow(forecast1.temperature, forecast2.temperature, forecast1.temperatureUnit);
+
+  return Forecast(
+    name: equalDates(DateTime.now(), forecast1.startTime) ? "Today" : forecast1.name, 
+    isDaytime: forecast1.isDaytime, 
+    temperature: forecast1.temperature, 
+    temperatureUnit: forecast1.temperatureUnit, 
+    windSpeed: forecast1.windSpeed, 
+    windDirection: forecast1.windDirection, 
+    shortForecast: forecast1.shortForecast, 
+    detailedForecast: forecast1.detailedForecast, 
+    precipitationProbability: forecast1.precipitationProbability, 
+    humidity: forecast1.humidity, 
+    dewpoint: forecast1.dewpoint, 
+    startTime: forecast1.startTime, 
+    endTime: forecast2.endTime, 
+    tempHighLow: tempHighLow);
+
+}
+
+String getTempHighLow(int temp1, int temp2, String tempUnit){
+  if (temp1 < temp2){
+    return "$temp1°$tempUnit/$temp2°$tempUnit";
+  }
+  else {
+    return "$temp2°$tempUnit/$temp1°$tempUnit";
+  }
+
 }

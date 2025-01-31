@@ -13,19 +13,20 @@ class ForecastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          ForecastNameWidget(forecast: _forecast),
-          Text(_forecast.detailedForecast ?? _forecast.shortForecast),
-          Text("Wind: ${_forecast.windSpeed} ${_forecast.windDirection}"),
-          Text("Temp: ${_forecast.temperature}${_forecast.temperatureUnit}"),
-          Text("Dewpoint: ${math.roundToDecimalPlaces(_forecast.dewpoint, 2)}"),
-          Text("Humidity: ${_forecast.humidity}"),
-          Text("Chance of Rain: ${_forecast.precipitationProbability}"),
-      
-        ],
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            ForecastNameWidget(forecast: _forecast),
+            Text(_forecast.detailedForecast ?? _forecast.shortForecast),
+            Text("Wind: ${_forecast.windSpeed} ${_forecast.windDirection}"),
+            Text("Temp: ${_forecast.temperature}°${_forecast.temperatureUnit}"),
+            Text(_forecast.dewpoint != null ? "Dewpoint: ${math.roundToDecimalPlaces(_forecast.dewpoint, 2)}" : ""),
+            Text(_forecast.humidity != null ? "Humidity: ${_forecast.humidity}" : ""),
+            Text(_forecast.precipitationProbability != null ? "Chance of Rain: ${_forecast.precipitationProbability}" : ""),
+          ],
+        ),
       ),
     );
   }
@@ -42,7 +43,7 @@ class ForecastNameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      _forecast.name ?? time.convertTimestampToDayAndHour(_forecast.startTime) ?? "",
+      _forecast.name ?? time.convertTimestampToDayAndHour(_forecast.startTime),
       style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold)
     );
   }

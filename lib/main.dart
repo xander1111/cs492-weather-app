@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:weatherapp/scripts/location.dart' as location;
 import 'package:weatherapp/scripts/forecast.dart' as forecast;
+import 'package:weatherapp/scripts/time.dart' as time;
+
 import 'package:weatherapp/widgets/forecast_summaries_widget.dart';
 import 'package:weatherapp/widgets/forecast_widget.dart';
 import 'package:weatherapp/widgets/location_widget.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -65,7 +68,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   List<forecast.Forecast> _forecastsHourly = [];
-  // create a new variable for _forecasts
+  List<forecast.Forecast> _filteredForecastsHourly= [];
+  List<forecast.Forecast> _forecasts = [];
+  List<forecast.Forecast> _dailyForecasts = [];
   forecast.Forecast? _activeForecast;
   location.Location? _location;
 
@@ -76,31 +81,58 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
 
+  Future<List<forecast.Forecast>> getForecasts(location.Location currentLocation) async {
+    return forecast.getForecastFromPoints(currentLocation.latitude, currentLocation.longitude);
+  }
+
+
   Future<List<forecast.Forecast>> getHourlyForecasts(location.Location currentLocation) async {
     return forecast.getForecastHourlyFromPoints(currentLocation.latitude, currentLocation.longitude);
   }
 
-  // TODO: create a new function getForecasts that returns forecast.getForecastFromPoints
-
-  void setActiveHourlyForecast(int i){
+  void setActiveForecast(int i){
     setState(() {
-      _activeForecast = _forecastsHourly[i];
+      _filteredForecastsHourly = getFilteredForecasts(i);
+      _activeForecast = _dailyForecasts[i];
     });
   }
 
-  // create a new function: setActiveHourlyForecast that updates _activeForecast with _forecasts[i]
+  void setActiveHourlyForecast(int i){
+    setState(() {
+      _activeForecast = _filteredForecastsHourly[i];
+    });
+  }
 
+  void setDailyForecasts(){
+    List<forecast.Forecast> dailyForecasts = [];
+    for (int i = 0; i < _forecasts.length-1; i+=2){
+      dailyForecasts.add(forecast.getForecastDaily(_forecasts[i], _forecasts[i+1]));
+      
+    }
+    setState(() {
+      _dailyForecasts = dailyForecasts;
+    });
+  }
+
+  List<forecast.Forecast> getFilteredForecasts(int i){
+    return _forecastsHourly.where((f)=>time.equalDates(f.startTime, _dailyForecasts[i].startTime)).toList();
+  }
 
   void setLocation() async {
     if (_location == null){
       location.Location currentLocation = await location.getLocationFromGps();
 
       List<forecast.Forecast> currentHourlyForecasts = await getHourlyForecasts(currentLocation);
+      List<forecast.Forecast> currentForecasts = await getForecasts(currentLocation);
 
       setState(() {
         _location = currentLocation;
         _forecastsHourly = currentHourlyForecasts;
-        _activeForecast = _forecastsHourly[10];
+        _forecasts = currentForecasts;
+        setDailyForecasts();
+        _filteredForecastsHourly = getFilteredForecasts(0);
+        _activeForecast = _forecastsHourly[0];
+        
         
       });
     }
@@ -131,18 +163,12 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               LocationWidget(location: _location),
               _activeForecast != null ? ForecastWidget(forecast: _activeForecast!) : Text(""),
-              // TODO add a new ForecastSummariesWidget for the daily forecasts
-              _forecastsHourly.isNotEmpty ? ForecastSummariesWidget(forecasts: _forecastsHourly, setActiveForecast: setActiveHourlyForecast) : Text("")
+              _dailyForecasts.isNotEmpty ? ForecastSummariesWidget(forecasts: _dailyForecasts, setActiveForecast: setActiveForecast) : Text(""),
+              _filteredForecastsHourly.isNotEmpty ? ForecastSummariesWidget(forecasts: _filteredForecastsHourly, setActiveForecast: setActiveHourlyForecast) : Text("")
             ],
           ),
         ),
       ),
     );
   }
-
 }
-
-// TODO: This will require some research
-// When a forecast is set from the daily forecasts (_forecasts), 
-// filter the hourly forecasts to only include forecasts with the same startDate (not including time) as the activeForecast
-

@@ -37,7 +37,7 @@ class ForecastSummaryWidget extends StatelessWidget {
               ),
             ),
             
-            Text("${_forecast.temperature}${_forecast.temperatureUnit}")
+            Text(_forecast.tempHighLow ?? "${_forecast.temperature}°${_forecast.temperatureUnit}")
           ],
         ),
       ),
@@ -58,7 +58,7 @@ class ForecastNameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      _forecast.name ?? time.convertTimestampToDayAndHour(_forecast.startTime) ?? "",
+      _forecast.name ?? time.convertTimestampToDayAndHour(_forecast.startTime.toLocal()),
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 12.0

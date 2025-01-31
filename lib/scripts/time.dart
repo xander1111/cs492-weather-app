@@ -1,18 +1,22 @@
 import 'package:intl/intl.dart';
 
-String? convertTimestampToDayAndHour(String? timestamp) {
-  if (timestamp == null){
-    return null;
-  }
-  // Parse the timestamp string into a DateTime object
-  DateTime dateTime = DateTime.parse(timestamp);
+String convertTimestampToDayAndHour(DateTime dateTime) {
 
   DateTime today = DateTime.now();
-  today = DateTime(today.year, today.month, today.day);  // Reset to midnight of today
 
-  String dayOfWeek = DateTime(dateTime.year, dateTime.month, dateTime.day).isAtSameMomentAs(today) ? 'Today' : DateFormat('EEEE').format(dateTime);
+  String dayOfWeek = equalDates(today, dateTime) ? 'Today' : DateFormat('EEEE').format(dateTime);
 
   String hour = DateFormat('h a').format(dateTime); // 12-hour format with AM/PM
 
   return '$dayOfWeek, $hour';
+}
+
+bool equalDates(DateTime day1, DateTime day2){
+  if (DateTime(day1.year, day1.month, day1.day) == DateTime(day2.year, day2.month, day2.day)){
+    return true;
+  }
+  else {
+    return false;
+  }
+  
 }
