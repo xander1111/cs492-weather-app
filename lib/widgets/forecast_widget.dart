@@ -22,7 +22,7 @@ class ForecastWidget extends StatelessWidget {
         child: Column(
           children: [
             ForecastNameWidget(forecast: _forecast),
-            Text(_forecast.detailedForecast ?? _forecast.shortForecast),
+            Text(_forecast.shortForecast),
             Text("Wind: ${_forecast.windSpeed} ${_forecast.windDirection}"),
             Text("Temp: ${_forecast.temperature}°${_forecast.temperatureUnit}"),
             Text(_forecast.dewpoint != null ? "Dewpoint: ${math.roundToDecimalPlaces(_forecast.dewpoint, 2)}" : ""),

@@ -35,7 +35,7 @@ class ForecastSummaryWidget extends StatelessWidget {
               child: Column(
                 children: [
                   ForecastNameWidget(forecast: _forecast),
-                  WeatherIconWidget(iconPath: _forecast.getIconPath())
+                  WeatherIconWidget(iconPath: _forecast.getIconPath(), width: 50, height: 50)
                   // ShortForecastWidget(forecast: _forecast)
                 ],
               ),
@@ -52,10 +52,14 @@ class ForecastSummaryWidget extends StatelessWidget {
 class WeatherIconWidget extends StatelessWidget {
   const WeatherIconWidget({
     super.key,
-    required String iconPath
-  }) : _iconPath = iconPath;
+    required String iconPath,
+    required int height,
+    required int width,
+  }) : _iconPath = iconPath, _height = height, _width = width;
 
   final String _iconPath;
+  final int _height;
+  final int _width;
 
   @override
   Widget build(BuildContext context) {
