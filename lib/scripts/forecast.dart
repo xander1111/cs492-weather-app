@@ -73,15 +73,98 @@ class Forecast{
   }
 
   String getIconPath(){
-    // TODO: Keep adding to this logic to try to get rid of question marks
-    // TODO: change the location in your android phone to at least 5 different location
-    // with different climates so you can eliminate more question marks
-    if (shortForecast.toLowerCase().contains("sunny")){
-      return "assets/weather_icons/sunny.svg";
+    String filename = "";
+    String forecastLowercase = shortForecast.toLowerCase();
+
+    if (forecastLowercase.contains("sunny")){
+      if (forecastLowercase.contains("mostly")) {
+        filename = "mostly_sunny";
+      }
+      else{
+        filename = "sunny";
+      }
+    } 
+    else if (forecastLowercase.contains("partly") && forecastLowercase.contains("cloudy")){
+      if (!isDaytime) {
+        filename = "mostly_cloudy_night";
+      }
+      else{
+        filename = "partly_cloudy";
+      }
+    }
+    else if (forecastLowercase.contains("cloudy")){
+      if (!isDaytime && forecastLowercase.contains("mostly")) {
+        filename = "mostly_cloudy_night";
+      }
+      else if (forecastLowercase.contains("mostly")) {
+        filename = "mostly_cloudy";
+      }
+      else{
+        filename = "cloudy";
+      }
+    }
+    else if (forecastLowercase.contains("clear")){
+      filename = "clear";
+    }
+    else if (forecastLowercase.contains("dust")){
+      filename = "dust";
+    }
+    else if (forecastLowercase.contains("thunder")){
+      if (forecastLowercase.contains("chance")){
+        filename = "isolated_tstorms";
+      }
+      else{
+        filename = "storm_tstorms";
+      }
+    }
+    else if (forecastLowercase.contains("freezing")){
+      filename = "icy";
+    }
+    else if (forecastLowercase.contains("fog")){
+      filename = "fog";
+    }
+    else if (forecastLowercase.contains("sleet")){
+      filename = "sleet_hail";
+    }
+    else if (forecastLowercase.contains("rain") && forecastLowercase.contains("snow")){
+      filename = "mixed_rain_hail_sleet";
+    }
+    else if (forecastLowercase.contains("drizzle")){
+      filename = "drizzle";
+    }
+    else if (forecastLowercase.contains("rain")){
+      if (forecastLowercase.contains("light")){
+        filename = "scattered_showers";
+      }
+      else if (forecastLowercase.contains("showers")){
+        filename = "showers";
+      }
+      else {
+        filename = "showers";
+      }
+    }
+    else if (forecastLowercase.contains("snow")){
+      if (forecastLowercase.contains("light")){
+        filename = "scattered_snow";
+      } 
+      else if (forecastLowercase.contains("heavy")){
+        filename = "heavy_snow";
+      }
+      else if (forecastLowercase.contains("showers")){
+        filename = "snow_showers";
+      }
+      else if (forecastLowercase.contains("blowing")){
+        filename = "blowing_snow";
+      }
+      else {
+        filename = "snow_showers";
+      }
     }
     else {
       return "assets/weather_icons/question.svg";
     }
+
+    return "assets/weather_icons/$filename.svg";
   }
 }
 

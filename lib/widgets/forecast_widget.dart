@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:weatherapp/scripts/forecast.dart' as forecast;
 import 'package:weatherapp/scripts/time.dart' as time;
 import 'package:weatherapp/scripts/math.dart' as math;
-
-// TODO: Add the icon to this widget as well
-// Make it look good.
 
 class ForecastWidget extends StatelessWidget {
   const ForecastWidget({
@@ -17,19 +15,28 @@ class ForecastWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            ForecastNameWidget(forecast: _forecast),
-            Text(_forecast.detailedForecast ?? _forecast.shortForecast),
-            Text("Wind: ${_forecast.windSpeed} ${_forecast.windDirection}"),
-            Text("Temp: ${_forecast.temperature}°${_forecast.temperatureUnit}"),
-            Text(_forecast.dewpoint != null ? "Dewpoint: ${math.roundToDecimalPlaces(_forecast.dewpoint, 2)}" : ""),
-            Text(_forecast.humidity != null ? "Humidity: ${_forecast.humidity}" : ""),
-            Text(_forecast.precipitationProbability != null ? "Chance of Rain: ${_forecast.precipitationProbability}" : ""),
-          ],
-        ),
+      child: Stack(
+        children: [
+          Center(
+            child: Opacity(opacity: 0.6, child: SvgPicture.asset(_forecast.getIconPath(), height: 200, width: 200))
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  ForecastNameWidget(forecast: _forecast),
+                  Text(_forecast.detailedForecast ?? _forecast.shortForecast),
+                  Text("Wind: ${_forecast.windSpeed} ${_forecast.windDirection}"),
+                  Text("Temp: ${_forecast.temperature}°${_forecast.temperatureUnit}"),
+                  Text(_forecast.dewpoint != null ? "Dewpoint: ${math.roundToDecimalPlaces(_forecast.dewpoint, 2)}" : ""),
+                  Text(_forecast.humidity != null ? "Humidity: ${_forecast.humidity}" : ""),
+                  Text(_forecast.precipitationProbability != null ? "Chance of Rain: ${_forecast.precipitationProbability}" : ""),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
