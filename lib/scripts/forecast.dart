@@ -71,6 +71,18 @@ class Forecast{
           "endTime: ${endTime.toLocal()}\n"
           "tempHighLow: ${tempHighLow ?? "None"}";
   }
+
+  String getIconPath(){
+    // TODO: Keep adding to this logic to try to get rid of question marks
+    // TODO: change the location in your android phone to at least 5 different location
+    // with different climates so you can eliminate more question marks
+    if (shortForecast.toLowerCase().contains("sunny")){
+      return "assets/weather_icons/sunny.svg";
+    }
+    else {
+      return "assets/weather_icons/question.svg";
+    }
+  }
 }
 
 Future<List<Forecast>> getForecastFromPoints(double lat, double lon) async{

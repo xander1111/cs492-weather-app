@@ -3,6 +3,9 @@ import 'package:weatherapp/scripts/forecast.dart' as forecast;
 import 'package:weatherapp/scripts/time.dart' as time;
 import 'package:weatherapp/scripts/math.dart' as math;
 
+// TODO: Add the icon to this widget as well
+// Make it look good.
+
 class ForecastWidget extends StatelessWidget {
   const ForecastWidget({
     super.key,

@@ -19,7 +19,7 @@ class ForecastSummaryWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        height: 125,
+        height: 145,
         width: 100,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0), // Adjust the radius to control the roundness
@@ -35,7 +35,8 @@ class ForecastSummaryWidget extends StatelessWidget {
               child: Column(
                 children: [
                   ForecastNameWidget(forecast: _forecast),
-                  ShortForecastWidget(forecast: _forecast)
+                  WeatherIconWidget(iconPath: _forecast.getIconPath())
+                  // ShortForecastWidget(forecast: _forecast)
                 ],
               ),
             ),
@@ -44,6 +45,23 @@ class ForecastSummaryWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class WeatherIconWidget extends StatelessWidget {
+  const WeatherIconWidget({
+    super.key,
+    required String iconPath
+  }) : _iconPath = iconPath;
+
+  final String _iconPath;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SvgPicture.asset(_iconPath, height: 50, width: 50),
     );
   }
 }
