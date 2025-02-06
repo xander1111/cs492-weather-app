@@ -118,11 +118,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return _forecastsHourly.where((f)=>time.equalDates(f.startTime, _dailyForecasts[i].startTime)).toList();
   }
 
-  void setLocation() async {
-    if (_location == null){
-      location.Location currentLocation = await location.getLocationFromGps();
+  void setLocation([String? city, String? state, String? zip]) async {
+    // if (_location == null){
+      location.Location? currentLocation;
 
-      List<forecast.Forecast> currentHourlyForecasts = await getHourlyForecasts(currentLocation);
+      if (city == null || state == null || zip == null) {
+        currentLocation = await location.getLocationFromGps();
+      }
+      else {
+        currentLocation = await location.getLocationFromAddress(city, state, zip);
+      }
+
+      List<forecast.Forecast> currentHourlyForecasts = await getHourlyForecasts(currentLocation!);
       List<forecast.Forecast> currentForecasts = await getForecasts(currentLocation);
 
       setState(() {
@@ -135,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
         
         
       });
-    }
+    // }
   }
 
   @override
@@ -173,23 +180,106 @@ class _MyHomePageState extends State<MyHomePage> {
             filteredForecastsHourly: _filteredForecastsHourly,
             setActiveForecast: setActiveForecast,
             setActiveHourlyForecast: setActiveHourlyForecast),
-          LocationTabWidget()]
+          LocationTabWidget(setLocation: setLocation)]
         ),
       ),
     );
   }
 }
 
-// TODO: Add a button to this widget that sets the active location to the phone's GPS location
 // TODO: Add 3 text fields for city state zip and a submit button that sets the location based on the user's entries
-class LocationTabWidget extends StatelessWidget {
+class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({
     super.key,
-  });
+    required Function setLocation,
+  }) : _setLocation = setLocation;
+
+  final Function _setLocation;
+
+  @override
+  State<LocationTabWidget> createState() => _LocationTabWidgetState();
+}
+
+class _LocationTabWidgetState extends State<LocationTabWidget> {
+  String? _city;
+  String? _state;
+  String? _zip;
+
+  void setLocationUsingAddress() {
+    widget._setLocation(_city ?? "", _state ?? "", _zip ?? "");
+  }
+
+  void setCityVar(String city) {
+    setState(() {
+      _city = city;
+    });
+  }
+  
+  void setStateVar(String state) {
+    setState(() {
+      _state = state;
+    });
+  }
+
+  void setZipVar(String zip) {
+    setState(() {
+      _zip = zip;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Text("PLACEHOLDER!!!!!");
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Center(
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () => widget._setLocation(),
+              child: Text("Use current location")
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "City"
+                ),
+                onChanged: setCityVar,
+              
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "State"
+                ),
+                onChanged: setStateVar,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Zip"
+                ),
+                onChanged: setZipVar,
+              ),
+            ),
+            ElevatedButton(
+              // style: ElevatedButton.styleFrom(
+              //   foregroundColor: Theme.of(context).primaryColorDark
+              // ),
+              onPressed: setLocationUsingAddress,
+              child: Text("Use entered location")
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
