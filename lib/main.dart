@@ -146,27 +146,89 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 0,
+      child: Scaffold(
+        appBar: AppBar(
+          // TRY THIS: Try changing the color here to a specific color (to
+          // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+          // change color while the other colors stay the same.
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.sunny_snowing)),
+              Tab(icon: Icon(Icons.edit_location_alt))
+            ]
+          )
+        ),
+        body:TabBarView(
+          children: [ForecastTabWidget(
+            location: _location, 
+            activeForecast: _activeForecast,
+            dailyForecasts: _dailyForecasts,
+            filteredForecastsHourly: _filteredForecastsHourly,
+            setActiveForecast: setActiveForecast,
+            setActiveHourlyForecast: setActiveHourlyForecast),
+          LocationTabWidget()]
+        ),
       ),
-      body:Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Center(
-          child: Column(
-            children: [
-              LocationWidget(location: _location),
-              _activeForecast != null ? ForecastWidget(forecast: _activeForecast!) : Text(""),
-              _dailyForecasts.isNotEmpty ? ForecastSummariesWidget(forecasts: _dailyForecasts, setActiveForecast: setActiveForecast) : Text(""),
-              _filteredForecastsHourly.isNotEmpty ? ForecastSummariesWidget(forecasts: _filteredForecastsHourly, setActiveForecast: setActiveHourlyForecast) : Text("")
-            ],
-          ),
+    );
+  }
+}
+
+// TODO: Add a button to this widget that sets the active location to the phone's GPS location
+// TODO: Add 3 text fields for city state zip and a submit button that sets the location based on the user's entries
+class LocationTabWidget extends StatelessWidget {
+  const LocationTabWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text("PLACEHOLDER!!!!!");
+  }
+}
+
+class ForecastTabWidget extends StatelessWidget {
+  const ForecastTabWidget({
+    super.key,
+    required location.Location? location,
+    required forecast.Forecast? activeForecast,
+    required List<forecast.Forecast> dailyForecasts,
+    required List<forecast.Forecast> filteredForecastsHourly,
+    required Function setActiveForecast,
+    required Function setActiveHourlyForecast
+
+  }) : _location = location, 
+      _activeForecast = activeForecast,
+      _dailyForecasts = dailyForecasts,
+      _filteredForecastsHourly = filteredForecastsHourly,
+      _setActiveForecast = setActiveForecast,
+      _setActiveHourlyForecast = setActiveHourlyForecast;
+
+  final location.Location? _location;
+  final forecast.Forecast? _activeForecast;
+  final List<forecast.Forecast> _dailyForecasts;
+  final List<forecast.Forecast> _filteredForecastsHourly;
+  final Function _setActiveForecast;
+  final Function _setActiveHourlyForecast;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Center(
+        child: Column(
+          children: [
+            LocationWidget(location: _location),
+            _activeForecast != null ? ForecastWidget(forecast: _activeForecast!) : Text(""),
+            _dailyForecasts.isNotEmpty ? ForecastSummariesWidget(forecasts: _dailyForecasts, setActiveForecast: _setActiveForecast) : Text(""),
+            _filteredForecastsHourly.isNotEmpty ? ForecastSummariesWidget(forecasts: _filteredForecastsHourly, setActiveForecast: _setActiveHourlyForecast) : Text("")
+          ],
         ),
       ),
     );
