@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/forecast.dart' as forecast;
 import 'package:weatherapp/scripts/time.dart' as time;
+import 'package:weatherapp/widgets/weather_icon_widget.dart';
 
-import 'package:flutter_svg/flutter_svg.dart';
+
 
 
 
@@ -49,26 +50,7 @@ class ForecastSummaryWidget extends StatelessWidget {
   }
 }
 
-class WeatherIconWidget extends StatelessWidget {
-  const WeatherIconWidget({
-    super.key,
-    required String iconPath,
-    required int height,
-    required int width,
-  }) : _iconPath = iconPath, _height = height, _width = width;
 
-  final String _iconPath;
-  final int _height;
-  final int _width;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SvgPicture.asset(_iconPath, height: 50, width: 50),
-    );
-  }
-}
 
 
 
