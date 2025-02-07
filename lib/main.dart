@@ -187,7 +187,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-// TODO: Add 3 text fields for city state zip and a submit button that sets the location based on the user's entries
 class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({
     super.key,
@@ -201,83 +200,60 @@ class LocationTabWidget extends StatefulWidget {
 }
 
 class _LocationTabWidgetState extends State<LocationTabWidget> {
-  String? _city;
-  String? _state;
-  String? _zip;
+  // I believe these variables don't require the use of setState since changing them doesn't affect what should be displayed
+  String _city = "";
+  String _state = "";
+  String _zip = "";
 
   void setLocationUsingAddress() {
-    widget._setLocation(_city ?? "", _state ?? "", _zip ?? "");
-  }
-
-  void setCityVar(String city) {
-    setState(() {
-      _city = city;
-    });
-  }
-  
-  void setStateVar(String state) {
-    setState(() {
-      _state = state;
-    });
-  }
-
-  void setZipVar(String zip) {
-    setState(() {
-      _zip = zip;
-    });
+    widget._setLocation(_city, _state, _zip);
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Center(
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: () => widget._setLocation(),
-              child: Text("Use current location")
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "City"
-                ),
-                onChanged: setCityVar,
-              
+      child: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () => widget._setLocation(),
+            child: Text("Use current location")
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "City"
               ),
+              onChanged: (value) => _city = value,              
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "State"
-                ),
-                onChanged: setStateVar,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "State"
               ),
+              onChanged: (value) => _state = value,              
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Zip"
-                ),
-                onChanged: setZipVar,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Zip"
               ),
+              onChanged: (value) => _zip = value,              
             ),
-            ElevatedButton(
-              // style: ElevatedButton.styleFrom(
-              //   foregroundColor: Theme.of(context).primaryColorDark
-              // ),
-              onPressed: setLocationUsingAddress,
-              child: Text("Use entered location")
-            ),
-          ],
-        ),
+          ),
+          ElevatedButton(
+            onPressed: setLocationUsingAddress,
+            child: Text("Use entered location")
+          ),
+        ],
       ),
     );
   }
