@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/location.dart' as location;
 
+
+// TODO: When the user clicks the Get From Location button:
+// Besides setting the active location (which it is already doing)
+// Add that location to a saved loations list (you'll need to create this)
+// Display the saved locations in a new widget below the get from GPS button
+// make the saved location widgets onTap()-able, so the user can tap a previously saved location, 
+// setting the location based on that
+// 
+
+
 class LocationTabWidget extends StatelessWidget {
   const LocationTabWidget({
     super.key,
@@ -37,13 +47,61 @@ class LocationDisplayWidget extends StatelessWidget {
   }
 }
 
-class LoctionInputWidget extends StatelessWidget {
+class LoctionInputWidget extends StatefulWidget {
   const LoctionInputWidget({
     super.key,
     required Function setLocation
   }) : _setLocation = setLocation;
 
   final Function _setLocation;
+
+  @override
+  State<LoctionInputWidget> createState() => _LoctionInputWidgetState();
+}
+
+class _LoctionInputWidgetState extends State<LoctionInputWidget> {
+
+  // values
+  String _city = "";
+  String _state = "";
+  String _zip = "";
+
+  // controllers
+  late TextEditingController _cityController;
+  late TextEditingController _stateController;
+  late TextEditingController _zipController;
+
+  // initialize Controllers
+  @override
+  void initState() {
+    super.initState();
+    _cityController = TextEditingController();
+    _stateController = TextEditingController();
+    _zipController = TextEditingController();
+
+  }
+
+  // update functions
+  void _updateCity(TextEditingController controller){
+    setState(() {
+      _city = controller.text;
+    });
+  }
+
+    void _updateState(TextEditingController controller){
+    setState(() {
+      _state = controller.text;
+    });
+  }
+
+    void _updateZip(TextEditingController controller){
+    setState(() {
+      _zip = controller.text;
+    });
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +112,12 @@ class LoctionInputWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              LocationTextWidget(width: 100, text: "city"),
-              LocationTextWidget(width: 75, text: "state"),
-              LocationTextWidget(width: 100, text: "zip"),
+              LocationTextWidget(width: 100, text: "city", controller: _cityController, updateText: _updateCity),
+              LocationTextWidget(width: 75, text: "state", controller: _stateController, updateText: _updateState),
+              LocationTextWidget(width: 100, text: "zip", controller: _zipController, updateText: _updateZip),
             ],
           ),
-          ElevatedButton(onPressed: () {_setLocation(["New York", "New York", ""]);}, child: Text("Get From Address"))
+          ElevatedButton(onPressed: () {widget._setLocation([_city, _state, _zip]);}, child: Text("Get From Address"))
         ],
       ),
     );
@@ -70,20 +128,27 @@ class LocationTextWidget extends StatelessWidget {
   const LocationTextWidget({
     super.key,
     required double width,
-    required String text
-  }): _width = width, _text = text;
+    required String text,
+    required TextEditingController controller,
+    required Function updateText
+  }): _width = width, _text = text, _controller = controller, _updateText = updateText;
 
   final double _width;
   final String _text;
+  final TextEditingController _controller;
+  final Function _updateText;
 
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: _width,
-      child: TextField(decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: _text
+      child: TextField(
+        controller: _controller,
+        onChanged: (value) => {_updateText(_controller)},
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: _text
       )),
     );
   }
