@@ -77,7 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    setLocation();
+    if (_location == null){
+      setLocation();
+    }
+    
 
   }
 
@@ -118,24 +121,26 @@ class _MyHomePageState extends State<MyHomePage> {
     return _forecastsHourly.where((f)=>time.equalDates(f.startTime, _dailyForecasts[i].startTime)).toList();
   }
 
-  void setLocation() async {
-    if (_location == null){
-      location.Location currentLocation = await location.getLocationFromGps();
-
-      List<forecast.Forecast> currentHourlyForecasts = await getHourlyForecasts(currentLocation);
-      List<forecast.Forecast> currentForecasts = await getForecasts(currentLocation);
-
-      setState(() {
-        _location = currentLocation;
-        _forecastsHourly = currentHourlyForecasts;
-        _forecasts = currentForecasts;
-        setDailyForecasts();
-        _filteredForecastsHourly = getFilteredForecasts(0);
-        _activeForecast = _forecastsHourly[0];
-        
-        
-      });
+  void setLocation([List<String>? locationList]) async {
+    location.Location currentLocation;
+    if (locationList == null){
+      currentLocation = await location.getLocationFromGps();
     }
+    else {
+      currentLocation = await location.getLocationFromAddress(locationList[0], locationList[1], locationList[2]) as location.Location;
+    }
+
+    List<forecast.Forecast> currentHourlyForecasts = await getHourlyForecasts(currentLocation);
+    List<forecast.Forecast> currentForecasts = await getForecasts(currentLocation);
+
+    setState(() {
+      _location = currentLocation;
+      _forecastsHourly = currentHourlyForecasts;
+      _forecasts = currentForecasts;
+      setDailyForecasts();
+      _filteredForecastsHourly = getFilteredForecasts(0);
+      _activeForecast = _forecastsHourly[0];
+    });
   }
 
   @override
