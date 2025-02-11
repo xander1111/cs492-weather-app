@@ -11,7 +11,7 @@ import 'package:weatherapp/scripts/location.dart' as location;
 // 
 
 
-class LocationTabWidget extends StatelessWidget {
+class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({
     super.key,
     required Function setLocation,
@@ -22,13 +22,73 @@ class LocationTabWidget extends StatelessWidget {
   final location.Location? _location;
 
   @override
+  State<LocationTabWidget> createState() => _LocationTabWidgetState();
+}
+
+class _LocationTabWidgetState extends State<LocationTabWidget> {
+  List<location.Location> _savedLocations = [];
+
+  void _addSavedLocation(location.Location? loc) {
+    if (loc == null) return;
+    setState(() {
+      _savedLocations.add(loc);
+    });
+  }
+
+  void _setLocationAndAddToSaved(List<String> loc) async {
+    await widget._setLocation(loc);
+    _addSavedLocation(widget._location);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        LocationDisplayWidget(activeLocation: _location),
-        LoctionInputWidget(setLocation: _setLocation),
-        ElevatedButton(onPressed: ()=>{_setLocation()},child: const Text("Get From GPS"))
+        LocationDisplayWidget(activeLocation: widget._location),
+        LoctionInputWidget(setLocation: _setLocationAndAddToSaved),
+        ElevatedButton(onPressed: ()=>{widget._setLocation()},child: const Text("Get From GPS")),
+        SavedLocationsWidget(savedLocations: _savedLocations),
       ],
+    );
+  }
+}
+
+class SavedLocationsWidget extends StatelessWidget {
+  const SavedLocationsWidget({
+    super.key,
+    required List<location.Location> savedLocations
+  }) : _savedLocations = savedLocations;
+
+  final List<location.Location> _savedLocations;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView.separated(
+        padding: const EdgeInsets.all(8),
+        itemCount: _savedLocations.length,
+        itemBuilder: (BuildContext context, int index) {
+          return SavedLocationWidget(location: _savedLocations[index]);
+        },
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
+      ),
+    );
+  }
+}
+
+class SavedLocationWidget extends StatelessWidget {
+  const SavedLocationWidget({
+    super.key,
+    required location.Location location
+  }) : _location = location;
+
+  final location.Location _location;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 50,
+      child: Text("${_location.city ?? "No City"}, ${_location.state ?? "No State"} ${_location.zip ?? "No Zip"}"),
     );
   }
 }
