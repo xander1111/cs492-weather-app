@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/location.dart' as location;
 import 'package:weatherapp/scripts/forecast.dart' as forecast;
 import 'package:weatherapp/scripts/time.dart' as time;
-
-import 'package:weatherapp/widgets/forecast_summaries_widget.dart';
-import 'package:weatherapp/widgets/forecast_widget.dart';
-import 'package:weatherapp/widgets/location_widget.dart';
-
+import 'package:weatherapp/widgets/forecast_tab_widget.dart';
+import 'package:weatherapp/widgets/location_tab_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,21 +21,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: title,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
@@ -49,15 +31,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -80,8 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_location == null){
       setLocation();
     }
-    
-
   }
 
   Future<List<forecast.Forecast>> getForecasts(location.Location currentLocation) async {
@@ -122,6 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void setLocation([List<String>? locationList]) async {
+    setState(() {
+      _location = null;
+    });
     location.Location currentLocation;
     if (locationList == null){
       currentLocation = await location.getLocationFromGps();
@@ -145,23 +119,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
-          // TRY THIS: Try changing the color here to a specific color (to
-          // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-          // change color while the other colors stay the same.
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
           bottom: TabBar(
             tabs: [
@@ -172,68 +135,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body:TabBarView(
           children: [ForecastTabWidget(
-            location: _location, 
+            activeLocation: _location, 
             activeForecast: _activeForecast,
             dailyForecasts: _dailyForecasts,
             filteredForecastsHourly: _filteredForecastsHourly,
             setActiveForecast: setActiveForecast,
             setActiveHourlyForecast: setActiveHourlyForecast),
-          LocationTabWidget()]
-        ),
-      ),
-    );
-  }
-}
-
-// TODO: Add a button to this widget that sets the active location to the phone's GPS location
-// TODO: Add 3 text fields for city state zip and a submit button that sets the location based on the user's entries
-class LocationTabWidget extends StatelessWidget {
-  const LocationTabWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Text("PLACEHOLDER!!!!!");
-  }
-}
-
-class ForecastTabWidget extends StatelessWidget {
-  const ForecastTabWidget({
-    super.key,
-    required location.Location? location,
-    required forecast.Forecast? activeForecast,
-    required List<forecast.Forecast> dailyForecasts,
-    required List<forecast.Forecast> filteredForecastsHourly,
-    required Function setActiveForecast,
-    required Function setActiveHourlyForecast
-
-  }) : _location = location, 
-      _activeForecast = activeForecast,
-      _dailyForecasts = dailyForecasts,
-      _filteredForecastsHourly = filteredForecastsHourly,
-      _setActiveForecast = setActiveForecast,
-      _setActiveHourlyForecast = setActiveHourlyForecast;
-
-  final location.Location? _location;
-  final forecast.Forecast? _activeForecast;
-  final List<forecast.Forecast> _dailyForecasts;
-  final List<forecast.Forecast> _filteredForecastsHourly;
-  final Function _setActiveForecast;
-  final Function _setActiveHourlyForecast;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Center(
-        child: Column(
-          children: [
-            LocationWidget(location: _location),
-            _activeForecast != null ? ForecastWidget(forecast: _activeForecast!) : Text(""),
-            _dailyForecasts.isNotEmpty ? ForecastSummariesWidget(forecasts: _dailyForecasts, setActiveForecast: _setActiveForecast) : Text(""),
-            _filteredForecastsHourly.isNotEmpty ? ForecastSummariesWidget(forecasts: _filteredForecastsHourly, setActiveForecast: _setActiveHourlyForecast) : Text("")
-          ],
+          LocationTabWidget(setLocation: setLocation, activeLocation: _location)]
         ),
       ),
     );
