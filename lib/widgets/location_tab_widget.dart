@@ -58,7 +58,7 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
         LocationDisplayWidget(activeLocation: widget._location),
         LoctionInputWidget(setLocation: _setLocationFromAddress), // pass in _addLocation
         ElevatedButton(onPressed: ()=>{_setLocationFromGps()},child: const Text("Get From GPS")),
-        SavedLocationsWidget()
+        SavedLocationsWidget(locations: _savedLocations)
       ],
     );
   }
