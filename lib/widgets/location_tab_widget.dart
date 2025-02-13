@@ -29,6 +29,22 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
 
   List<location.Location> _savedLocations = [];
 
+  void _setLocationFromAddress(String city, String state, String zip) async {
+    // set location to null temporarily while it finds a new location
+    widget._setLocation(null);
+    location.Location currentLocation = await location.getLocationFromAddress(city, state, zip) as location.Location;
+    widget._setLocation(currentLocation);
+    _savedLocations.add(currentLocation);
+  }
+
+  void _setLocationFromGps() async {
+    // set location to null temporarily while it finds a new location
+    widget._setLocation(null);
+    location.Location currentLocation = await location.getLocationFromGps();
+    widget._setLocation(currentLocation);
+  }
+
+  
   void _addLocation(location.Location location){
     setState(() {
       _savedLocations.add(location);
@@ -40,11 +56,25 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
     return Column(
       children: [
         LocationDisplayWidget(activeLocation: widget._location),
-        LoctionInputWidget(setLocation: widget._setLocation), // pass in _addLocation
-        ElevatedButton(onPressed: ()=>{widget._setLocation()},child: const Text("Get From GPS")),
-        // new widget pass _savedLocations
+        LoctionInputWidget(setLocation: _setLocationFromAddress), // pass in _addLocation
+        ElevatedButton(onPressed: ()=>{_setLocationFromGps()},child: const Text("Get From GPS")),
+        SavedLocationsWidget()
       ],
     );
+  }
+}
+
+class SavedLocationsWidget extends StatelessWidget {
+  const SavedLocationsWidget({
+    super.key,
+    required List<location.Location> locations
+  }) : _locations = locations;
+
+  final List<location.Location> _locations;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [],);
   }
 }
 
@@ -65,7 +95,7 @@ class LocationDisplayWidget extends StatelessWidget {
 class LoctionInputWidget extends StatefulWidget {
   const LoctionInputWidget({
     super.key,
-    required Function setLocation
+    required Function setLocation,
   }) : _setLocation = setLocation;
 
   final Function _setLocation;
@@ -92,25 +122,16 @@ class _LoctionInputWidgetState extends State<LoctionInputWidget> {
 
   // update functions
   void _updateCity(String value){
-    setState(() {
-      _city = value;
-    });
+    _city = value;
   }
 
-    void _updateState(String value){
-    setState(() {
-      _state = value;
-    });
+  void _updateState(String value){
+    _state = value;
   }
 
-    void _updateZip(String value){
-    setState(() {
-      _zip = value;
-    });
+  void _updateZip(String value){
+    _zip = value;
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +147,7 @@ class _LoctionInputWidgetState extends State<LoctionInputWidget> {
               LocationTextWidget(width: 100, text: "zip", updateText: _updateZip),
             ],
           ),
-          ElevatedButton(onPressed: () {widget._setLocation([_city, _state, _zip]);}, child: Text("Get From Address"))
+          ElevatedButton(onPressed: () {widget._setLocation(_city, _state, _zip);}, child: Text("Get From Address"))
         ],
       ),
     );
