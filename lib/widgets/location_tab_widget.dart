@@ -4,14 +4,14 @@ import 'package:weatherapp/scripts/location.dart' as location;
 
 // TODO: When the user clicks the Get From Location button:
 // Besides setting the active location (which it is already doing)
-// Add that location to a saved loations list (you'll need to create this)
+// Add that location to a saved locations list (you'll need to create this)
 // Display the saved locations in a new widget below the get from GPS button
 // make the saved location widgets onTap()-able, so the user can tap a previously saved location, 
 // setting the location based on that
 // 
 
 
-class LocationTabWidget extends StatelessWidget {
+class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({
     super.key,
     required Function setLocation,
@@ -22,12 +22,27 @@ class LocationTabWidget extends StatelessWidget {
   final location.Location? _location;
 
   @override
+  State<LocationTabWidget> createState() => _LocationTabWidgetState();
+}
+
+class _LocationTabWidgetState extends State<LocationTabWidget> {
+
+  List<location.Location> _savedLocations = [];
+
+  void _addLocation(location.Location location){
+    setState(() {
+      _savedLocations.add(location);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        LocationDisplayWidget(activeLocation: _location),
-        LoctionInputWidget(setLocation: _setLocation),
-        ElevatedButton(onPressed: ()=>{_setLocation()},child: const Text("Get From GPS"))
+        LocationDisplayWidget(activeLocation: widget._location),
+        LoctionInputWidget(setLocation: widget._setLocation), // pass in _addLocation
+        ElevatedButton(onPressed: ()=>{widget._setLocation()},child: const Text("Get From GPS")),
+        // new widget pass _savedLocations
       ],
     );
   }
