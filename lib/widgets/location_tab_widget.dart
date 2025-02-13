@@ -1,13 +1,15 @@
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/location.dart' as location;
+import 'package:path_provider/path_provider.dart' as path_provider;
 
-// TODO:
-// Refer to this documentation:
-// https://docs.flutter.dev/cookbook/persistence/reading-writing-files
-// Save the saved locations List<location.Location> as json data to a file whenever a new saved location is added
-// Load the saved locations from the file on initState
-// For now you don't need to worry about deleting data or ensuring no redundant data
-// HINT: You will likely want to create a fromJson() factory and a toJson() method to the location.dart Location class
+
+Future<File> get _savedLocationsFile async {
+  final directory = await path_provider.getApplicationDocumentsDirectory();
+  return File("${directory.path}/saved_locations.json");
+}
 
 class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({
@@ -27,6 +29,21 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
 
   final List<location.Location> _savedLocations = [];
 
+  @override
+  void initState() {
+    _savedLocationsFile.then((file) async {
+      if (!await file.exists()) return;
+      final String contents  = await file.readAsString();
+      final List<location.Location> locations = [for (dynamic loc in jsonDecode(contents)) location.Location.fromJson(loc)];
+
+      setState(() {
+        _savedLocations.addAll(locations);
+      });
+    });
+
+    super.initState();
+  }
+
   void _setLocationFromAddress(String city, String state, String zip) async {
     // set location to null temporarily while it finds a new location
     widget._setLocation(null);
@@ -43,9 +60,15 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
   }
 
   
-  void _addLocation(location.Location location){
+  void _addLocation(location.Location loc){
     setState(() {
-      _savedLocations.add(location);
+      _savedLocations.add(loc);
+    });
+    
+    _savedLocationsFile.then((file) {
+      final List<Map<String, dynamic>> locationJsons = [for (location.Location savedLoc in _savedLocations) savedLoc.toJson()];
+
+      file.writeAsString(jsonEncode(locationJsons));
     });
   }
 
