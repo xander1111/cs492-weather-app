@@ -77,41 +77,35 @@ class LoctionInputWidget extends StatefulWidget {
 class _LoctionInputWidgetState extends State<LoctionInputWidget> {
 
   // values
-  String _city = "";
-  String _state = "";
-  String _zip = "";
-
-  // controllers
-  late TextEditingController _cityController;
-  late TextEditingController _stateController;
-  late TextEditingController _zipController;
-
+  late String _city;
+  late String _state;
+  late String _zip;
   // initialize Controllers
   @override
   void initState() {
     super.initState();
-    _cityController = TextEditingController();
-    _stateController = TextEditingController();
-    _zipController = TextEditingController();
+    _city = "";
+    _state = "";
+    _zip = "";
 
   }
 
   // update functions
-  void _updateCity(TextEditingController controller){
+  void _updateCity(String value){
     setState(() {
-      _city = controller.text;
+      _city = value;
     });
   }
 
-    void _updateState(TextEditingController controller){
+    void _updateState(String value){
     setState(() {
-      _state = controller.text;
+      _state = value;
     });
   }
 
-    void _updateZip(TextEditingController controller){
+    void _updateZip(String value){
     setState(() {
-      _zip = controller.text;
+      _zip = value;
     });
   }
 
@@ -127,9 +121,9 @@ class _LoctionInputWidgetState extends State<LoctionInputWidget> {
         children: [
           Row(
             children: [
-              LocationTextWidget(width: 100, text: "city", controller: _cityController, updateText: _updateCity),
-              LocationTextWidget(width: 75, text: "state", controller: _stateController, updateText: _updateState),
-              LocationTextWidget(width: 100, text: "zip", controller: _zipController, updateText: _updateZip),
+              LocationTextWidget(width: 100, text: "city", updateText: _updateCity),
+              LocationTextWidget(width: 75, text: "state", updateText: _updateState),
+              LocationTextWidget(width: 100, text: "zip", updateText: _updateZip),
             ],
           ),
           ElevatedButton(onPressed: () {widget._setLocation([_city, _state, _zip]);}, child: Text("Get From Address"))
@@ -139,31 +133,45 @@ class _LoctionInputWidgetState extends State<LoctionInputWidget> {
   }
 }
 
-class LocationTextWidget extends StatelessWidget {
+class LocationTextWidget extends StatefulWidget {
   const LocationTextWidget({
     super.key,
     required double width,
     required String text,
-    required TextEditingController controller,
     required Function updateText
-  }): _width = width, _text = text, _controller = controller, _updateText = updateText;
+  }): _width = width, _text = text, _updateText = updateText;
 
   final double _width;
   final String _text;
-  final TextEditingController _controller;
   final Function _updateText;
 
+  @override
+  State<LocationTextWidget> createState() => _LocationTextWidgetState();
+}
+
+class _LocationTextWidgetState extends State<LocationTextWidget> {
+
+  // controllers
+  late TextEditingController _controller;
+
+  // initialize Controllers
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: _width,
+      width: widget._width,
       child: TextField(
         controller: _controller,
-        onChanged: (value) => {_updateText(_controller)},
+        onChanged: (value) => {widget._updateText(value)},
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          labelText: _text
+          labelText: widget._text
       )),
     );
   }
