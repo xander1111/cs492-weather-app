@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/location.dart' as location;
 import 'package:weatherapp/scripts/location_database.dart' as location_database;
 
-// TODO: Use the new location.database.dart logic to get the locations
-// update the addLocations function to only add a single location instead of the entire list of _saved locations
-// add delete buttons to the weather widgets
-// use those to delete
-// you will need to add a delete function to the location_database.dart class
+
 class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({
     super.key,
     required Function setLocation,
-    required location.Location? activeLocation
+    required location.Location? activeLocation,
   }) : _setLocation = setLocation, _location = activeLocation;
 
   final Function _setLocation;
@@ -23,7 +19,7 @@ class LocationTabWidget extends StatefulWidget {
 
 class _LocationTabWidgetState extends State<LocationTabWidget> {
 
-  late location_database.LocationDatabase ls;
+  late location_database.LocationDatabase ld;
 
   List<location.Location> _savedLocations = [];
 
@@ -50,7 +46,15 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
       _savedLocations.add(location);
     });
 
-    ls.insertLocation(location);
+    ld.insertLocation(location);
+  }
+
+  void _removeLocation(location.Location location) {
+    setState(() {
+      _savedLocations.remove(location);
+    });
+
+    ld.deleteLocation(location);
   }
 
   @override
@@ -61,8 +65,8 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
   }
 
   void _loadLocations() async {
-    ls = await location_database.LocationDatabase.open();
-    List<location.Location> locations = await ls.getLocations();
+    ld = await location_database.LocationDatabase.open();
+    List<location.Location> locations = await ld.getLocations();
     setState(() {
       _savedLocations = locations;
     });
@@ -75,7 +79,7 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
         LocationDisplayWidget(activeLocation: widget._location),
         LoctionInputWidget(setLocation: _setLocationFromAddress), // pass in _addLocation
         ElevatedButton(onPressed: ()=>{_setLocationFromGps()},child: const Text("Get From GPS")),
-        SavedLocationsWidget(locations: _savedLocations, setLocation: widget._setLocation)
+        SavedLocationsWidget(locations: _savedLocations, setLocation: widget._setLocation, removeLocation: _removeLocation)
       ],
     );
   }
@@ -85,15 +89,17 @@ class SavedLocationsWidget extends StatelessWidget {
   const SavedLocationsWidget({
     super.key,
     required List<location.Location> locations,
-    required Function setLocation
-  }) : _locations = locations, _setLocation = setLocation;
+    required Function setLocation,
+    required Function removeLocation
+  }) : _locations = locations, _setLocation = setLocation, _removeLocation = removeLocation;
 
   final List<location.Location> _locations;
   final Function _setLocation;
+  final Function _removeLocation;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: _locations.map((loc)=>SavedLocationWidget(loc: loc, setLocation: _setLocation)).toList(),);
+    return Column(children: _locations.map((loc)=>SavedLocationWidget(loc: loc, setLocation: _setLocation, removeLocation: _removeLocation)).toList(),);
   }
 }
 
@@ -101,15 +107,30 @@ class SavedLocationWidget extends StatelessWidget {
   const SavedLocationWidget({
     super.key,
     required location.Location loc,
-    required Function setLocation
-  }) : _loc = loc, _setLocation = setLocation;
+    required Function setLocation,
+    required Function removeLocation,
+  }) : _loc = loc, _setLocation = setLocation, _removeLocation = removeLocation;
 
   final location.Location _loc;
   final Function _setLocation;
+  final Function _removeLocation;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(onTap: () {_setLocation(_loc);}, child: Text("${_loc.city}, ${_loc.state} ${_loc.zip}"));
+    return GestureDetector(onTap: () {_setLocation(_loc);}, child: 
+      Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Text("${_loc.city}, ${_loc.state} ${_loc.zip}"),
+              Spacer(),
+              ElevatedButton(onPressed: () => _removeLocation(_loc), child: Icon(Icons.delete))
+            ],
+          ),
+        )
+      )
+    );
   }
 }
 
