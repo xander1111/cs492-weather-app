@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/location.dart' as location;
 import 'package:weatherapp/scripts/location_storage.dart' as locationStorage;
 
-
 // TODO:
 // Refer to this documentation:
 // https://docs.flutter.dev/cookbook/persistence/reading-writing-files
@@ -55,7 +54,6 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
     });
 
     await ls.writeLocations(_savedLocations);
-
     
   }
 
@@ -70,8 +68,6 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
     List<location.Location> locations = await ls.readLocations();
     setState(() {
       _savedLocations = locations;
-      print(locations);
-      print("test");
     });
   }
 
