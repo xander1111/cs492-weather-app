@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/location.dart' as location;
+import 'package:weatherapp/scripts/location_storage.dart' as locationStorage;
+
 
 // TODO:
 // Refer to this documentation:
@@ -25,7 +27,11 @@ class LocationTabWidget extends StatefulWidget {
 
 class _LocationTabWidgetState extends State<LocationTabWidget> {
 
-  final List<location.Location> _savedLocations = [];
+  final locationStorage.LocationStorage ls = locationStorage.LocationStorage();
+
+  List<location.Location> _savedLocations = [];
+
+
 
   void _setLocationFromAddress(String city, String state, String zip) async {
     // set location to null temporarily while it finds a new location
@@ -43,9 +49,29 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
   }
 
   
-  void _addLocation(location.Location location){
+  void _addLocation(location.Location location) async{
     setState(() {
       _savedLocations.add(location);
+    });
+
+    await ls.writeLocations(_savedLocations);
+
+    
+  }
+
+  @override
+  void initState() {
+    // Get initial locations
+    super.initState();
+    _loadLocations();
+  }
+
+  void _loadLocations() async {
+    List<location.Location> locations = await ls.readLocations();
+    setState(() {
+      _savedLocations = locations;
+      print(locations);
+      print("test");
     });
   }
 
