@@ -7,11 +7,7 @@ import 'package:weatherapp/widgets/location_widget.dart';
 import 'package:weatherapp/widgets/forecast_summaries_widget.dart';
 import 'package:weatherapp/widgets/forecast_widget.dart';
 
-// TODO: Use the new location.database.dart logic to get the locations
-// update the addLocations function to only add a single location instead of the entire list of _saved locations
-// add delete buttons to the weather widgets
-// use those to delete
-// you will need to add a delete function to the location_database.dart class
+
 
 
 class ForecastTabWidget extends StatelessWidget {

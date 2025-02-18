@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp/scripts/location.dart' as location;
 import 'package:weatherapp/scripts/location_storage.dart' as locationStorage;
 
-// TODO:
-// Refer to this documentation:
-// https://docs.flutter.dev/cookbook/persistence/reading-writing-files
-// Save the saved locations List<location.Location> as json data to a file whenever a new saved location is added
-// Load the saved locations from the file on initState
-// For now you don't need to worry about deleting data or ensuring no redundant data
-// HINT: You will likely want to create a fromJson() factory and a toJson() method to the location.dart Location class
-
+// TODO: Use the new location.database.dart logic to get the locations
+// update the addLocations function to only add a single location instead of the entire list of _saved locations
+// add delete buttons to the weather widgets
+// use those to delete
+// you will need to add a delete function to the location_database.dart class
 class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({
     super.key,
