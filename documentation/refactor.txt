@@ -8,4 +8,32 @@ Documentation writer: Xander Bailey
 Purpose of the Refactor: Improve readability
 Scope: Changed the name of the 'my home page' widget.
 
+Purpose of the Refactor: Remove unnecessary code
+Scope: Refactored/removed the 'getForecasts' and 'getHourlyForecasts' functions in main.dart
 
+Purpose of the Refactor: Improve readability
+Scope: Renamed 'getFilteredForecasts' to 'getHourlyForecastsForDay' and its parameter
+
+Purpose of the Refactor: Remove unnecessary code
+Scope: Removed a duplicated line in 'setLocation' in main.dart
+
+Purpose of the Refactor: Remove unused code
+Scope: Removed location_storage.dart and all references to it
+
+Purpose of the Refactor: Deduplicate code
+Scope: Refactored SavedLocationWidget and SavedLocationEditWidget
+
+Purpose of the Refactor: Remove unnecessary code
+Scope: Removed the update functions in LocationInputWidget
+
+Purpose of the Refactor: Make it easier to navigate the code files
+Scope: Added more folders within lib/ to categorize files better
+
+Purpose of the Refactor: Improve encapsulation
+Scope: Extracted SavedLocationWidget to its own file
+
+Purpose of the Refactor: Improve encapsulation
+Scope: Extracted LocationInputWidget to its own file
+
+Purpose of the Refactor: Improve encapsulation and readability
+Scope: Created an 'ActiveForecast' class and file to abstract some data away from main.dart

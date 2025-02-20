@@ -6,11 +6,6 @@ import 'package:weatherapp/scripts/time.dart' as time;
 import 'package:weatherapp/widgets/forecast_tab_widget.dart';
 import 'package:weatherapp/widgets/location_tab_widget.dart';
 
-// TODO: With a partner, refactor the entire codebase (not just main.dart, every file)
-// You should be looking for opportunities to make the code better
-// Examples include (but are not limited to): Abstraction, Code Structure, Naming Conventions, Code Optimization, Redundant Code Removal, File names/directories
-// You should be working with a partner. One person should be making changes to the code and the other should be documenting those changes in documentation/refactor.txt
-
 void main() {
   runApp(const MyApp());
 }
