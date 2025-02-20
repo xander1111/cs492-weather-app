@@ -56,11 +56,11 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
 
   void _addLocation(location.Location location) async {
     if (!_savedLocations.contains(location)){
-    setState(() {
-      _savedLocations.add(location);
-    });
+      setState(() {
+        _savedLocations.add(location);
+      });
 
-    _db.insertLocation(location);
+      _db.insertLocation(location);
     }
 
   }
