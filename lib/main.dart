@@ -5,6 +5,7 @@ import 'package:weatherapp/widgets/location/location_tab_widget.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
 
+// TODOS: The TODOs are located in Assignment8-1 in canvas assignments
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => ForecastProvider()),
@@ -23,8 +24,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: title,
+      darkTheme: ThemeData.dark(),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 143, 216, 233)),
         useMaterial3: true,
       ),
       home: MyHomePage(title: title),

@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:weatherapp/models/location.dart' as location;
 
+@Deprecated("Replaced with database functionality")
 class LocationStorage {
   // Getting the local path to save the file
   Future<String> get _localPath async {

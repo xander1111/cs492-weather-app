@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:weatherapp/models/location.dart' as location;
+import 'package:provider/provider.dart';
+import 'package:weatherapp/providers/location_provider.dart';
 
 class LocationWidget extends StatelessWidget {
-  const LocationWidget({super.key, required location.Location? location})
-      : _location = location;
-
-  final location.Location? _location;
+  const LocationWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var locationProvider = Provider.of<LocationProvider>(context);
+    var activeLocation = locationProvider.activeLocation;
     return SizedBox(
         child: Text(
-            "${_location?.city ?? "city"}, ${_location?.state ?? "state"} ${_location?.zip ?? "zip"}"));
+            "${activeLocation?.city ?? "city"}, ${activeLocation?.state ?? "state"} ${activeLocation?.zip ?? "zip"}"));
   }
 }
