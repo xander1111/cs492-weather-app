@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:weatherapp/utils/settings.dart';
 
-class ThemeProvider extends ChangeNotifier { 
+class SettingsProvider extends ChangeNotifier { 
   bool _darkMode = false;
+  late Settings _settings;
+
+  SettingsProvider() {
+    loadSettings();
+  }
 
   bool get darkMode => _darkMode;
   set darkMode(value) => _darkMode = value;
@@ -17,6 +23,14 @@ class ThemeProvider extends ChangeNotifier {
 
   void updateDarkMode(bool value) {
     _darkMode = value;
+    _settings.saveBool("darkMode", value);
+
+    notifyListeners();
+  }
+
+  Future<void> loadSettings() async {
+    _settings = await Settings.init();
+    updateDarkMode(_settings.getBool("darkMode") ?? false);
     notifyListeners();
   }
 }

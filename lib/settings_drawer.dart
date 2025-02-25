@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weatherapp/providers/theme_provider.dart';
+import 'package:weatherapp/providers/settings_provider.dart';
 
 class SettingsDrawer extends StatelessWidget {
   const SettingsDrawer({
@@ -9,7 +9,7 @@ class SettingsDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var settingsProvider = Provider.of<ThemeProvider>(context);
+    var settingsProvider = Provider.of<SettingsProvider>(context);
 
     return ListView(
       children: [

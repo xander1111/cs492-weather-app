@@ -5,16 +5,15 @@ import 'package:weatherapp/widgets/forecast/forecast_tab_widget.dart';
 import 'package:weatherapp/widgets/location/location_tab_widget.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
-import 'package:weatherapp/providers/theme_provider.dart';
+import 'package:weatherapp/providers/settings_provider.dart';
 
-// TODOS: The TODOs are located in Assignment8-1 in canvas assignments
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => ForecastProvider()),
     ChangeNotifierProvider(
         create: (context) => LocationProvider(
             Provider.of<ForecastProvider>(context, listen: false))),
-    ChangeNotifierProvider(create: (context) => ThemeProvider())
+    ChangeNotifierProvider(create: (context) => SettingsProvider())
   ], child: const MyApp()));
 }
 
@@ -25,11 +24,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var themeProvider = Provider.of<ThemeProvider>(context);
+    var settingsProvider = Provider.of<SettingsProvider>(context);
 
     return MaterialApp(
       title: title,
-      theme: themeProvider.currentTheme,
+      theme: settingsProvider.currentTheme,
       home: MyHomePage(title: title),
     );
   }
