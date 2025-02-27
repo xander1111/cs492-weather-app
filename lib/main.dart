@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherapp/providers/settings_provider.dart';
 import 'package:weatherapp/widgets/forecast/forecast_tab_widget.dart';
 import 'package:weatherapp/widgets/location/location_tab_widget.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
-import 'package:weatherapp/themes/themes.dart' as themes;
+import 'package:weatherapp/themes/themes.dart';
 
-// TODOS: The TODOs are located in Assignment8-1 in canvas assignments
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => ForecastProvider()),
@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: title,
-      theme: themes.lightTheme,
-      darkTheme: themes.darkTheme,
+      theme: Themes.lightTheme(settingsProvider.lightModeSeedColor),
+      darkTheme: Themes.darkTheme(settingsProvider.darkModeSeedColor),
       themeMode: settingsProvider.darkMode ? ThemeMode.dark : ThemeMode.light,
       home: MyHomePage(title: title),
     );
@@ -96,11 +96,63 @@ class SettingsDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Switch(
-          value: settingsProvider.darkMode,
-          onChanged: (bool value) {
-            settingsProvider.toggleMode();
-          }),
+      child: ListView(
+        children: [
+          DarkModeSwitchWidget(settingsProvider: settingsProvider),
+          ColorThemePickerWidget()
+        ],
+      ),
+    );
+  }
+}
+
+class ColorThemePickerWidget extends StatefulWidget {
+  const ColorThemePickerWidget({
+    super.key,
+  });
+
+  @override
+  State<ColorThemePickerWidget> createState() => _ColorThemePickerWidgetState();
+}
+
+class _ColorThemePickerWidgetState extends State<ColorThemePickerWidget> {
+  Color _selectedColor = Color(SettingsProvider.defaultLightModeSeedColor);
+
+  void _setColor(Color value) {
+    setState(() {
+      _selectedColor = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var settingsProvider = Provider.of<SettingsProvider>(context);
+    _selectedColor = Color(settingsProvider.darkMode ? settingsProvider.darkModeSeedColor : settingsProvider.lightModeSeedColor);
+
+    return ColorPicker(pickerColor: _selectedColor, onColorChanged: (value) {
+      _setColor(value);
+      settingsProvider.darkMode ? settingsProvider.darkModeSeedColor = value.value : settingsProvider.lightModeSeedColor = value.value;
+    });
+  }
+}
+
+class DarkModeSwitchWidget extends StatelessWidget {
+  const DarkModeSwitchWidget({
+    super.key,
+    required this.settingsProvider,
+  });
+
+  final SettingsProvider settingsProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.dark_mode),
+      title: Text("Dark Mode"),
+      trailing: Switch(
+        value: settingsProvider.darkMode,
+        onChanged: (bool value) => settingsProvider.toggleMode()
+      ),
     );
   }
 }
