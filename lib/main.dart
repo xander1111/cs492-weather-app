@@ -5,6 +5,7 @@ import 'package:weatherapp/widgets/forecast/forecast_tab_widget.dart';
 import 'package:weatherapp/widgets/location/location_tab_widget.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
+import 'package:weatherapp/themes/themes.dart';
 
 // TODOS: The TODOs are located in Assignment8-1 in canvas assignments
 void main() {
@@ -29,8 +30,8 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: title,
-      darkTheme: ThemeData.dark(),
-      theme: ThemeData.light(),
+      theme: lightTheme,
+      darkTheme: darkTheme,
       themeMode: settingsProvider.darkMode ? ThemeMode.dark : ThemeMode.light,
       home: MyHomePage(title: title),
     );
