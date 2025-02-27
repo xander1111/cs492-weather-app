@@ -5,7 +5,7 @@ import 'package:weatherapp/widgets/forecast/forecast_tab_widget.dart';
 import 'package:weatherapp/widgets/location/location_tab_widget.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
-import 'package:weatherapp/themes/themes.dart';
+import 'package:weatherapp/themes/themes.dart' as themes;
 
 // TODOS: The TODOs are located in Assignment8-1 in canvas assignments
 void main() {
@@ -25,13 +25,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var settingsProvider = Provider.of<SettingsProvider>(context);
 
     return MaterialApp(
       title: title,
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: themes.lightTheme,
+      darkTheme: themes.darkTheme,
       themeMode: settingsProvider.darkMode ? ThemeMode.dark : ThemeMode.light,
       home: MyHomePage(title: title),
     );
@@ -50,20 +49,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-
     var settingsProvider = Provider.of<SettingsProvider>(context);
 
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
       child: Scaffold(
+        endDrawer: SettingsDrawer(settingsProvider: settingsProvider),
         appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            actions: [Switch(
-              value: settingsProvider.darkMode,
-              onChanged: (bool value) {
-                  settingsProvider.toggleMode();
-              })],
+            actions: [
+              SettingsButton()
+            ],
             title: Text(widget.title),
             bottom: TabBar(tabs: [
               Tab(icon: Icon(Icons.sunny_snowing)),
@@ -71,6 +68,39 @@ class _MyHomePageState extends State<MyHomePage> {
             ])),
         body: TabBarView(children: [ForecastTabWidget(), LocationTabWidget()]),
       ),
+    );
+  }
+}
+
+class SettingsButton extends StatelessWidget {
+  const SettingsButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        icon: Icon(Icons.settings),
+        onPressed: () {Scaffold.of(context).openEndDrawer();});
+  }
+}
+
+class SettingsDrawer extends StatelessWidget {
+  const SettingsDrawer({
+    super.key,
+    required this.settingsProvider,
+  });
+
+  final SettingsProvider settingsProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Switch(
+          value: settingsProvider.darkMode,
+          onChanged: (bool value) {
+            settingsProvider.toggleMode();
+          }),
     );
   }
 }
