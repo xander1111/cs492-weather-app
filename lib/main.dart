@@ -50,46 +50,27 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+
+    var settingsProvider = Provider.of<SettingsProvider>(context);
+
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: TitleWidget(widget: widget),
+            actions: [Switch(
+              value: settingsProvider.darkMode,
+              onChanged: (bool value) {
+                  settingsProvider.toggleMode();
+              })],
+            title: Text(widget.title),
             bottom: TabBar(tabs: [
               Tab(icon: Icon(Icons.sunny_snowing)),
               Tab(icon: Icon(Icons.edit_location_alt))
             ])),
         body: TabBarView(children: [ForecastTabWidget(), LocationTabWidget()]),
       ),
-    );
-  }
-}
-
-class TitleWidget extends StatelessWidget {
-  const TitleWidget({
-    super.key,
-    required this.widget,
-  });
-
-  final MyHomePage widget;
-
-  @override
-  Widget build(BuildContext context) {
-
-    var settingsProvider = Provider.of<SettingsProvider>(context);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(widget.title),
-        Switch(
-        value: settingsProvider.darkMode,
-        onChanged: (bool value) {
-            settingsProvider.toggleMode();
-        }),
-      ],
     );
   }
 }
