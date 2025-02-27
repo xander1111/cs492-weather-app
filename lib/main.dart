@@ -132,6 +132,7 @@ class _ColorThemePickerWidgetState extends State<ColorThemePickerWidget> {
     return ColorPicker(pickerColor: _selectedColor, onColorChanged: (value) {
       _setColor(value);
       settingsProvider.darkMode ? settingsProvider.darkModeSeedColor = value.value : settingsProvider.lightModeSeedColor = value.value;
+      // Color.value is deprecated, but it's replacement (Color.toARGB32) is not available in the stable channel yet
     });
   }
 }
