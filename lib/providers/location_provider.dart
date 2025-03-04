@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp/models/location.dart' as location;
 import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/utils/location_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LocationProvider extends ChangeNotifier {
   final ForecastProvider forecastProvider;
@@ -32,6 +33,7 @@ class LocationProvider extends ChangeNotifier {
     if (_activeLocation != null) {
       forecastProvider.initForecasts(_activeLocation!);
     }
+    print(FirebaseFirestore.instance.collection('locations').snapshots());
   }
 
   Future<void> setLocationFromAddress(

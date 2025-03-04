@@ -42,3 +42,14 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:30.0.1')  // Firebase BOM (Bill of Materials)
+    implementation 'com.google.firebase:firebase-analytics'  // Example Firebase SDK
+    // Add more Firebase services as needed, e.g., Firebase Auth, Firestore, etc.
+}
+
+apply plugin: 'com.google.gms.google-services'  // Apply the Firebase services plugin
+
+
+
