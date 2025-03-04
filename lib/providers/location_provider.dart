@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp/models/location.dart' as location;
 import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/utils/location_database.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 
 class LocationProvider extends ChangeNotifier {
   final ForecastProvider forecastProvider;
@@ -33,7 +33,7 @@ class LocationProvider extends ChangeNotifier {
     if (_activeLocation != null) {
       forecastProvider.initForecasts(_activeLocation!);
     }
-    print(FirebaseFirestore.instance.collection('locations').snapshots());
+    // print(FirebaseFirestore.instance.collection('locations').snapshots());
   }
 
   Future<void> setLocationFromAddress(
@@ -65,6 +65,7 @@ class LocationProvider extends ChangeNotifier {
       _savedLocations.add(newLocation);
       _db.insertLocation(newLocation);
     }
+    fs.FirebaseFirestore.instance.collection("locations").add(newLocation.toJson());
   }
 
   Future<void> deleteLocation(location.Location locToDelete) async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp/models/location.dart' as location;
 import 'package:provider/provider.dart';
 import 'package:weatherapp/providers/location_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({super.key});
@@ -60,14 +61,23 @@ class SavedLocationsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: _locationService.savedLocations
-          .map((loc) => _editMode
-              ? SavedLocationEditWidget(
-                  loc: loc, delete: _locationService.deleteLocation)
-              : SavedLocationWidget(
-                  loc: loc, setLocation: _locationService.setLocation))
-          .toList(),
+    return Flexible(
+      child: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection("locations").snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return const Text("loading");
+            return ListView.builder(
+                itemCount: snapshot.data?.docs.length,
+                itemBuilder: (context, index) {
+                  return _editMode
+                      ? SavedLocationEditWidget(
+                          loc: location.Location.fromJson(snapshot.data!.docs[index].data()),
+                          delete: _locationService.deleteLocation)
+                      : SavedLocationWidget(
+                          loc: location.Location.fromJson(snapshot.data!.docs[index].data()),
+                          setLocation: _locationService.setLocation);
+                });
+          }),
     );
   }
 }

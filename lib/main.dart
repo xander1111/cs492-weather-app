@@ -6,9 +6,13 @@ import 'package:weatherapp/widgets/forecast/forecast_tab_widget.dart';
 import 'package:weatherapp/widgets/location/location_tab_widget.dart';
 import 'package:weatherapp/providers/location_provider.dart';
 import 'package:weatherapp/providers/forecast_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 // TODOS: The TODOs are located in Assignment8-1 in canvas assignments
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => ForecastProvider()),
     ChangeNotifierProvider(
@@ -22,6 +26,8 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   final String title = 'CS492 Weather App';
+
+  
 
   @override
   Widget build(BuildContext context) {
