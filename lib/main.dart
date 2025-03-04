@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,8 @@ import 'package:weatherapp/providers/forecast_provider.dart';
 
 // TODOS: The TODOs are located in Assignment8-1 in canvas assignments
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => ForecastProvider()),
     ChangeNotifierProvider(

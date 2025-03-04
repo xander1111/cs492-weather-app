@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp/models/location.dart' as location;
 import 'package:provider/provider.dart';
 import 'package:weatherapp/providers/location_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LocationTabWidget extends StatefulWidget {
   const LocationTabWidget({super.key});
@@ -38,9 +39,11 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
                 }),
           ],
         ),
-        SavedLocationsWidget(
-          locationService: locationProvider,
-          editMode: _editMode,
+        Expanded(
+          child: SavedLocationsWidget(
+            locationService: locationProvider,
+            editMode: _editMode,
+          ),
         )
       ],
     );
@@ -60,14 +63,20 @@ class SavedLocationsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: _locationService.savedLocations
-          .map((loc) => _editMode
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('locations').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const Text("Loading...");
+        return ListView.builder(
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder: (context, index) =>
+            _editMode
               ? SavedLocationEditWidget(
-                  loc: loc, delete: _locationService.deleteLocation)
+                loc: location.Location.fromJson(snapshot.data!.docs[index].data() as Map<String,dynamic>), delete: _locationService.deleteLocation)
               : SavedLocationWidget(
-                  loc: loc, setLocation: _locationService.setLocation))
-          .toList(),
+                loc: location.Location.fromJson(snapshot.data!.docs[index].data() as Map<String,dynamic>), setLocation: _locationService.setLocation),
+        );
+      }
     );
   }
 }

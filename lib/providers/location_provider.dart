@@ -65,6 +65,8 @@ class LocationProvider extends ChangeNotifier {
       _savedLocations.add(newLocation);
       _db.insertLocation(newLocation);
     }
+
+    FirebaseFirestore.instance.collection('locations').add(newLocation.toJson());
   }
 
   Future<void> deleteLocation(location.Location locToDelete) async {
