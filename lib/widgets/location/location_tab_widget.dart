@@ -24,7 +24,7 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
         LoctionInputWidget(
             setLocation: locationProvider.setLocationFromAddress),
         ElevatedButton(
-            onPressed: () => {locationProvider.setLocationFromGps},
+            onPressed: () => locationProvider.setLocationFromGps(),
             child: const Text("Get From GPS")),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
