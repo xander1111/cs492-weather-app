@@ -3,11 +3,13 @@ import 'package:weatherapp/models/location.dart' as location;
 import 'package:weatherapp/providers/forecast_provider.dart';
 import 'package:weatherapp/utils/firebase_storage.dart' as fs;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:weatherapp/utils/get_image.dart';
 
 class LocationProvider extends ChangeNotifier {
   final ForecastProvider forecastProvider;
 
   location.Location? activeLocation;
+  String? activeLocationImg;
 
   LocationProvider(this.forecastProvider) {
     setInitialLocation();
@@ -23,8 +25,12 @@ class LocationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setLocation(location.Location loc) {
+  void setLocation(location.Location loc) async {
     activeLocation = loc;
+    if (activeLocation != null){
+      activeLocationImg = await getImageByQuery("${activeLocation!.city} ${activeLocation!.state}");
+    }
+    
     notifyListeners();
     if (activeLocation != null) {
       forecastProvider.initForecasts(activeLocation!);

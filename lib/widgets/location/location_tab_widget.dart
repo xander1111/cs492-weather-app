@@ -20,7 +20,7 @@ class _LocationTabWidgetState extends State<LocationTabWidget> {
 
     return Column(
       children: [
-        LocationDisplayWidget(activeLocation: locationProvider.activeLocation),
+        LocationDisplayWidget(),
         LoctionInputWidget(
             setLocation: locationProvider.setLocationFromAddress),
         ElevatedButton(
@@ -63,7 +63,8 @@ class SavedLocationsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection("locations").snapshots(),
+          stream:
+              FirebaseFirestore.instance.collection("locations").snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return const Text("loading");
             return ListView.builder(
@@ -71,10 +72,12 @@ class SavedLocationsWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return _editMode
                       ? SavedLocationEditWidget(
-                          loc: location.Location.fromJson(snapshot.data!.docs[index].data()),
+                          loc: location.Location.fromJson(
+                              snapshot.data!.docs[index].data()),
                           delete: _locationService.deleteLocation)
                       : SavedLocationWidget(
-                          loc: location.Location.fromJson(snapshot.data!.docs[index].data()),
+                          loc: location.Location.fromJson(
+                              snapshot.data!.docs[index].data()),
                           setLocation: _locationService.setLocation);
                 });
           }),
@@ -151,17 +154,43 @@ class SavedLocationEditWidget extends StatelessWidget {
 }
 
 class LocationDisplayWidget extends StatelessWidget {
-  const LocationDisplayWidget(
-      {super.key, required location.Location? activeLocation})
-      : _location = activeLocation;
-
-  final location.Location? _location;
+  const LocationDisplayWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Text(_location != null
-        ? "${_location.city}, ${_location.state} ${_location.zip}"
-        : "No Location Set");
+    var locationProvider = Provider.of<LocationProvider>(context);
+    location.Location? loc = locationProvider.activeLocation;
+
+    return Column(
+      children: [
+        SizedBox(
+          height: 200,
+          child: Image.network(
+            locationProvider.activeLocationImg ?? "",
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
+                        : null,
+                  ),
+                );
+              }
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Center(child: Text('Failed to load image'));
+            },
+          ),
+        ),
+        Text(loc != null
+            ? "${loc.city}, ${loc.state} ${loc.zip}"
+            : "No Location Set"),
+      ],
+    );
   }
 }
 
