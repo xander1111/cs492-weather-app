@@ -38,6 +38,7 @@ class LocationProvider extends ChangeNotifier {
       if (activeLocation?.url == null || activeLocation!.url!.isEmpty) {
         activeLocationImg = await getImageByQuery("${activeLocation!.city} ${activeLocation!.state}");
         loc.url = activeLocationImg;
+        updateLocation(activeLocation!);
       } else {
         activeLocationImg = activeLocation!.url;
       }
@@ -77,10 +78,13 @@ class LocationProvider extends ChangeNotifier {
     if (! await fs.checkIfEntryExists("locations", "zip", newLocation.zip)){
       FirebaseFirestore.instance.collection("locations").add(newLocation.toJson());
     }
-    
   }
 
   Future<void> deleteLocation(location.Location locToDelete) async {
     fs.deleteEntryWhere("locations", "zip", locToDelete.zip);
+  }
+
+  Future<void> updateLocation(location.Location locToUpdate) async {
+    fs.updateEntryWhere("locations", "zip", locToUpdate.zip, locToUpdate.toJson());
   }
 }

@@ -45,3 +45,15 @@ Future<void> deleteEntryWhere(
     await doc.reference.delete();
   }
 }
+
+Future<void> updateEntryWhere(
+  String collectionName, String fieldName, dynamic value, Map<String, dynamic> data) async {
+  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection(collectionName)
+      .where(fieldName, isEqualTo: value)
+      .get();
+
+  for (DocumentSnapshot doc in querySnapshot.docs) {
+    await doc.reference.update(data);
+  }
+}
