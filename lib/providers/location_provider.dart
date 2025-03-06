@@ -35,7 +35,7 @@ class LocationProvider extends ChangeNotifier {
   Future<void> setLocation(location.Location loc) async {
     activeLocation = loc;
     if (activeLocation != null){
-      if (activeLocation?.url == null) {
+      if (activeLocation?.url == null || activeLocation!.url!.isEmpty) {
         activeLocationImg = await getImageByQuery("${activeLocation!.city} ${activeLocation!.state}");
         loc.url = activeLocationImg;
       } else {
