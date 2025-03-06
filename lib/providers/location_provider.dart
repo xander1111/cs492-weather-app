@@ -32,10 +32,15 @@ class LocationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setLocation(location.Location loc) async {
+  Future<void> setLocation(location.Location loc) async {
     activeLocation = loc;
     if (activeLocation != null){
-      activeLocationImg = await getImageByQuery("${activeLocation!.city} ${activeLocation!.state}");
+      if (activeLocation?.url == null) {
+        activeLocationImg = await getImageByQuery("${activeLocation!.city} ${activeLocation!.state}");
+        loc.url = activeLocationImg;
+      } else {
+        activeLocationImg = activeLocation!.url;
+      }
     }
     
     notifyListeners();
@@ -52,7 +57,7 @@ class LocationProvider extends ChangeNotifier {
     final newLocation = await location.getLocationFromAddress(city, state, zip);
 
     if (newLocation != null) {
-      activeLocation = newLocation;
+      await setLocation(newLocation);
       addLocation(newLocation);
       notifyListeners();
     }
@@ -63,7 +68,7 @@ class LocationProvider extends ChangeNotifier {
     notifyListeners();
 
     final newLocation = await location.getLocationFromGps();
-    activeLocation = newLocation;
+    await setLocation(newLocation);
     addLocation(newLocation);
     notifyListeners();
   }
